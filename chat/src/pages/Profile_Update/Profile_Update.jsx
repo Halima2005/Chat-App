@@ -50,25 +50,25 @@ const Profile_Update = () => {
   };
 
   useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUid(user.uid);
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
-        if (docSnap.data().name) {
-          setName(docSnap.data().name);
-        }
-        if (docSnap.data().bio) {
-          setBio(docSnap.data().bio);
-        }
-        if (docSnap.data().avatar) {
-          setPrevImage(docSnap.data().avatar);
+        const userData = docSnap.data();
+        if (userData) {
+          if (userData.name) setName(userData.name);
+          if (userData.bio) setBio(userData.bio);
+          if (userData.avatar) setPrevImage(userData.avatar);
         }
       } else {
         navigate("/");
       }
     });
-  });
+  
+    return () => unsubscribe(); // 🔥 Always unsubscribe
+  }, [navigate]);
+  
 
   return (
     <div className="profile">

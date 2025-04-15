@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { doc, getFirestore, setDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword, getAuth, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { collection, doc, getDoc, getDocs, getFirestore, query, setDoc, where } from "firebase/firestore";
 import { toast } from "react-toastify";
 const firebaseConfig = {
   apiKey: "AIzaSyCobqqcMD9CNazrjYqqz8cA-aKaW0Sbu1U",
@@ -59,5 +59,27 @@ const logout = async  () => {
     }
    
 }
-export { auth, db, login, logout, signup };
+
+const resetPass = async (email) => {
+    if (!email) {
+      toast.error("Enter your email");
+      return;
+    }
+  
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast.success("Reset email sent");
+    } catch (error) {
+      console.error("Reset error:", error);
+      if (error.code === "auth/user-not-found") {
+        toast.error("Email not registered");
+      } else {
+        toast.error(error.message);
+      }
+    }
+  };
+  
+
+
+export { auth, db, login, logout, signup ,resetPass};
 

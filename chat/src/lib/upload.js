@@ -2,7 +2,8 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 
 const upload  = async (file) => {
     const storage = getStorage();
-    const storageRef = ref(storage, `images/${Date.now( + file.name)}`);
+    const storageRef = ref(storage, `images/${Date.now()}-${file.name}`);
+
     
     const uploadTask = uploadBytesResumable(storageRef, file);
     
@@ -22,7 +23,8 @@ const upload  = async (file) => {
               }
             }, 
             (error) => {
-            
+              console.error("Upload failed:", error);
+              reject(error);
             }, 
             () => {
           
